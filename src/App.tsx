@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import { useQuery } from "react-query";
+// components
+import Item from "./components/Item/Item";
 import { Drawer, LinearProgress, Grid, Badge } from "@material-ui/core";
 import AddShoppingCartIcon from "@material-ui/icons/AddShoppingCart";
+// styles
 import { Wrapper } from "./App.styles";
 // types
 export type CartItemType = {
@@ -22,13 +25,24 @@ function App() {
     "products",
     getProducts
   );
-  console.log(data);
+ 
+  const getTotalItems = () => null;
+  const handleAddToCart = (clickedItem: CartItemType) => null;
+  const handleRemoveFromCart = () => null;
+
+  if (isLoading) return <LinearProgress />;
+  if (error) return <div>Somethig went wrong...</div>;
   return (
-    <>
-      <Drawer>Drawer</Drawer>
-      {/* <LinearProgress /> */}
-      start
-    </>
+    <Wrapper >
+      <Grid container spacing={3}>
+        {data?.map((item) => (
+          <Grid item key={item.id} xs={12} sm={4}>
+            <Item item={item} handleAddToCart={handleAddToCart}/>
+            </Grid>
+        ))
+        }
+      </Grid>
+    </Wrapper>
   );
 }
 
