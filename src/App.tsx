@@ -5,7 +5,7 @@ import Item from "./components/Item/Item";
 import { Drawer, LinearProgress, Grid, Badge } from "@material-ui/core";
 import AddShoppingCartIcon from "@material-ui/icons/AddShoppingCart";
 // styles
-import { Wrapper } from "./App.styles";
+import { Wrapper, StyledButton } from "./App.styles";
 // types
 export type CartItemType = {
   id: number;
@@ -14,7 +14,7 @@ export type CartItemType = {
   image: string;
   price: number;
   title: string;
-  anount: number;
+  amount: number;
 };
 
 const getProducts = async (): Promise<CartItemType[]> =>
@@ -25,22 +25,34 @@ function App() {
     "products",
     getProducts
   );
- 
-  const getTotalItems = () => null;
+
+  const [cartOpen, setCartOpen] = useState(false);
+  const [cartItems, setCartItems] = useState([] as CartItemType[]);
+
+  const getTotalItems = (items: CartItemType[]):number => {
+    return items.reduce((acc: number, item) => acc + item.amount, 0)
+  };
   const handleAddToCart = (clickedItem: CartItemType) => null;
   const handleRemoveFromCart = () => null;
 
   if (isLoading) return <LinearProgress />;
   if (error) return <div>Somethig went wrong...</div>;
   return (
-    <Wrapper >
+    <Wrapper>
+      <Drawer anchor="right" open={cartOpen} onClose={() => setCartOpen(false)}>
+        Cart goes here
+      </Drawer>
+      <StyledButton onClick={() => setCartOpen(true)}>
+        <Badge badgeContent={getTotalItems(cartItems)} color="error">
+          <AddShoppingCartIcon />
+        </Badge>
+      </StyledButton>
       <Grid container spacing={3}>
         {data?.map((item) => (
           <Grid item key={item.id} xs={12} sm={4}>
-            <Item item={item} handleAddToCart={handleAddToCart}/>
-            </Grid>
-        ))
-        }
+            <Item item={item} handleAddToCart={handleAddToCart} />
+          </Grid>
+        ))}
       </Grid>
     </Wrapper>
   );
